@@ -3,25 +3,29 @@ console.log('First Project');
 class Game {
 	constructor() {
 		this.isPlayersTurn = true;
+		this.$enemyArea = $('.enemy-row .col');
+		this.$playerBarArea = $('.player-row .player-health')
 		this.newGame();
 	}
 	newGame() {
 		// todo: let player choose class
 		this.player = new Player(new Wizard);
 		this.enemy = new Enemy(new Monster);
+		this.$enemyArea.append(this.enemy.$enemyCard);
+		this.$playerBarArea.append(this.player.$playerHealthCard);
 
-		while (this.winLoseCheck() === 0){
-			if(this.isPlayersTurn = !this.isPlayersTurn) {
-				this.playerTurn();
-			} else {
-				this.enemyTurn();
-			}
-		}
-		if (this.winLoseCheck === 1){
-			alert(`Congratulations! You defeated the enemy`);
-		} else {
-			alert(`Bummer, you died.`);
-		}
+		// while (this.winLoseCheck() === 0){
+		// 	if(this.isPlayersTurn = !this.isPlayersTurn) {
+		// 		this.playerTurn();
+		// 	} else {
+		// 		this.enemyTurn();
+		// 	}
+		// }
+		// if (this.winLoseCheck === 1){
+		// 	alert(`Congratulations! You defeated the enemy`);
+		// } else {
+		// 	alert(`Bummer, you died.`);
+		// }
 	}
 
 	playerTurn() {
@@ -107,6 +111,7 @@ class Player extends Fighter {
 		this.heavyDamage = 3;
 		this.lightEnergy = 2;
 		this.lightDamage = 1;
+		this.createCard();
 	}
 
 	heavyAttack(enemy) {
@@ -118,14 +123,35 @@ class Player extends Fighter {
 
 	}
 
+	createCard() {
+		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
+		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
+		this.$playerHealthCard = $('<div class="card"><div class="card-body"><h5 class="card-title">Health</h5><div class="progress player-health-bar"></div><h5class="card-title">Energy</h5><div class="progress player-energy-bar"></div></div></div>');
+		this.$playerHealthCard.find('.player-health-bar').append(this.$healthBar);
+		this.$playerHealthCard.find('.player-energy-bar').append(this.$energyBar);
+	}
+
 }
 
 class Enemy extends Fighter {
-	constructor (character) {
+	constructor(character) {
 		super(character);
 		this.attackEnergy = 3;
 		this.attackDamage = 2;
+		this.createCard();
 	}
+
+	createCard() {
+		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
+		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
+		this.$enemyCard = $(`<div class="card enemy-card"><img src="${this.character.picture}" class="card-img-top" alt="..."><div class="card-body"><h5 class="card-title">Health</h5><div class="progress enemy-health-bar"></div><h5 class="card-title">Energy</h5><div class="progress enemy-energy-bar"></div></div></div>`);
+		this.$enemyCard.find('.enemy-health-bar').append(this.$healthBar);
+		this.$enemyCard.find('.enemy-energy-bar').append(this.$energyBar);
+
+		
+
+	}
+
 	enemyAttack(enemy) {
 		this.attack(enemy, this.attackEnergy, this.attackDamage);		
 	}
@@ -150,12 +176,17 @@ class Monster extends Character {
 		this.energy = 15;
 		this.health = 20;
 		this.name = "monster";
+		this.picture = "https://techcrunch.com/wp-content/uploads/2019/09/monster-dot-com.jpg?w=1390&crop=1";
 	}
 }
 // todo: add classes (player and enemy classes)
 
+$(()=> {
 
-//const game = new Game;
+const game = new Game;
+
+})
+
 
 
 
