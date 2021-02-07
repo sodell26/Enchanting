@@ -1,0 +1,13 @@
+body {
+	background-color: #472e82;
+}
+
+.enemy-row {
+	padding-bottom: 50px; 
+}
+
+.enemy-card {
+	width: 18rem; 
+	margin: 0 auto; 
+	float: none;
+}
