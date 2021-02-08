@@ -11,3 +11,15 @@ body {
 	margin: 0 auto; 
 	float: none;
 }
+
+.weapon-card {
+
+}
+
+.enemy-img, .hero-img{
+	height: 270px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
