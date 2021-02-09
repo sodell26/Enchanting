@@ -1,13 +1,14 @@
 body {
 	background-color: #472e82;
+	/*change to a cool background*/
 }
 
 .enemy-row {
-	padding-bottom: 50px; 
+	padding-bottom: 50px; /*needed this or the enemy card touches the hero card, looked weird*/
 }
 
 .enemy-card {
-	width: 18rem; 
+	width: 18rem; /*relative to the enemy row*/
 	margin: 0 auto; 
 	float: none;
 }
@@ -16,7 +17,7 @@ body {
 
 }
 
-.enemy-img, .hero-img{
+.enemy-img, .hero-img{ /*making it the background image so it doesn't change the size of the card*/
 	height: 270px;
 	background-repeat: no-repeat;
 	background-position: center;
