@@ -37,17 +37,24 @@ class Game {
 		this.player.startPlayerTurn();//right now, just adds energy
 		let typeOfAttack = null;
 
-		this.player.$heavyAttackCard.on('click', ()=> {//heavy attack is picked
-			this.player.$heavyAttackCard.off('click');//this and below keeps player from being able to attack when it's not their turn
-			this.player.$lightAttackCard.off('click');
-			this.player.heavyAttack(this.enemy);
-			console.log(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.heavyDamage} and used ${this.player.heavyEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`);
-			if (this.winLoseCheck() === 0 ){ //if health is both good for player and enemy, move to monster's turn
-				this.enemyTurn();
-			} else {
-				this.endGame();
-			}
-		});
+		if (this.player.energy < this.player.heavyEnergy){
+			this.player.$heavyAttackCard.on('click', ()=> {
+				this.player.$heavyAttackCard.off('click');
+				alert('You do not have enough energy to make that move.');
+			});
+		} else {
+			this.player.$heavyAttackCard.on('click', ()=> {//heavy attack is picked
+				this.player.$heavyAttackCard.off('click');//this and below keeps player from being able to attack when it's not their turn
+				this.player.$lightAttackCard.off('click');
+				this.player.heavyAttack(this.enemy);
+				console.log(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.heavyDamage} and used ${this.player.heavyEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`);
+				if (this.winLoseCheck() === 0 ){ //if health is both good for player and enemy, move to monster's turn
+					this.enemyTurn();
+				} else {
+					this.endGame();
+				}
+			});
+		}
 
 		this.player.$lightAttackCard.on('click', ()=> {//light attack is picked
 			this.player.$lightAttackCard.off('click');//keeps them from playing off turn
@@ -154,9 +161,9 @@ class Player extends Fighter { //has different methods that Fighter
 
 	createCard() { //create hero cards (including energy/health, type, weapon, attacks)
 		this.heavyEnergy = 5;
-		//make this and belwo three programmable with character type
+		//make this and belwo three programmable with character type?
 		this.heavyDamage = 3;
-		this.lightEnergy = 2;
+		this.lightEnergy = 0;
 		this.lightDamage = 1;
 		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>'); //from boostrap, moved here from html so I could visualize it there first
 		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
@@ -217,11 +224,36 @@ class Wizard extends Character {//I like this set up, unless I change weapons to
 	constructor() {
 		super();
 		this.energy = 20;
-		this.health = 25;
-		this.name = "wizard";
+		this.health = 30;
+		this.name = "wizard";//used for the dialogue and card
 		this.picture = "https://images.squarespace-cdn.com/content/v1/55a81ab8e4b0d6293bf4f755/1543616178316-IOVJVEGMHM7WYH0DKMKF/ke17ZwdGBToddI8pDm48kB7Wg69NbBN3UJ65yaPjgwpZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpzy7r4cmDkEVZ6VvAvlVoeYnCn-DUv0WXnO1FJ9eOsUX2q0X2kEKL_rY34eESCHPaY/lego-wizard.jpg?format=300w";
 		this.weaponPicture = "https://inclusive-solutions.com/wp-content/uploads/2015/11/flashing-magic-wand.jpg";
 		this.weaponName = "Wand";
+	}
+}
+
+class Warrior extends Character {
+	constructor() {
+		super();
+		this.energy = 30;
+		this.health = 20;
+		this.name = 'warrior';
+		this.picture = 'https://img.brickowl.com/files/image_cache/large/lego-spartan-warrior-minifigure-25-873254.jpg';
+		this.weaponPicture = 'https://cdn3.vectorstock.com/i/thumb-large/97/02/morgenstern-medieval-weapon-or-mace-object-vector-23849702.jpg';
+		this.weaponName = 'mace';
+
+	}
+}
+
+class Archer extends Character {
+	constructor() {
+		super();
+		this.energy = 25;
+		this.health = 25;
+		this.name = 'archer';
+		this.picture = 'https://images-na.ssl-images-amazon.com/images/I/419BQsP3vNL._AC_.jpg';
+		this.weaponPicture = 'https://i.pinimg.com/564x/3c/a6/81/3ca68126bb4c8da7bbf919aac363a7c8.jpg';
+		this.weaponName = 'bow and arrow'
 	}
 }
 
