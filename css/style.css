@@ -33,16 +33,45 @@ body {
 	margin-bottom: 20px;
 }
 
+.enemy-card.attacking {
+	z-index: 1000;
+	animation: enemyAttack linear 1s;
+	animation-iteration-count: 1;
+	transform-origin: 50% 50%;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+@keyframes enemyAttack{
+  0% {
+    transform:  translate(0px,0px)  ;
+  }
+  8% {
+    transform:  translate(-10px,0px)  ;
+  }
+  16% {
+    transform:  translate(10px,0px)  ;
+  }
+  24% {
+    transform:  translate(-10px,0px)  ;
+  }
+  32% {
+    transform:  translate(10px,0px)  ;
+  }
+  40% {
+    transform:  translate(-10px,0px)  ;
+  }
+  48% {
+    transform:  translate(10px,0px)  ;
+  }
+  56% {
+    transform:  translate(-10px,0px)  ;
+  }
+  64% {
+    transform:  translate(0px,0px)  ;
+  }
+  74% {
+    transform:  translate(0px,100px)  ;
+  }
+  100% {
+    transform:  translate(0px,0px)  ;
+  }
+}

@@ -107,14 +107,18 @@ class Game {
 	enemyTurn() {
 		setTimeout(()=>{
 			this.enemy.startTurn();//right now, just adds energy
-			this.enemy.enemyAttack(this.player);//tells where enemy to attack
+			this.enemy.$enemyCard.addClass('attacking');
+			setTimeout(()=>{
+				this.enemy.enemyAttack(this.player);//tells where enemy to attack
+				this.enemy.$enemyCard.removeClass('attacking');
+			},1000);
 			this.createAlert(`The ${this.enemy.character.name} attacked! It hit you for ${this.enemy.attackDamage} and used ${this.enemy.attackEnergy} energy. You have ${this.player.health} health left.`, 'warning');
 			if (this.winLoseCheck() === 0 ){// same as for player
 				this.playerTurn();
 			} else {
 				this.endGame();
 			}		
-		},500);	
+		},500);
 	}
 
 	winLoseCheck() {//shorter way to check for health status
