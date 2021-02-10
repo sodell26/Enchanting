@@ -11,13 +11,32 @@
 <body>
 	<div class="container">
 		<div class="row enemy-row"><!-- the top row of the battle where the enemy(ies) go -->
-			<div class="col">
+			<div class="col-sm-3 alert-area">
+
+			</div>
+			<div class="col-sm-9">
 
 			</div>
 		</div>
 
 		<div class="row player-row"><!-- the second/bottom row of battle where my player and all their stuff goes -->
 			<div class="col-sm-2 player-health"><!-- health and energy bars -->
+				<div class="card bar-card">
+					<div class="card-body">
+						<h5 class="card-title">Health</h5>
+						<div class="progress player-health-bar"></div>
+						<h5 class="card-title">Energy</h5>
+						<div class="progress player-energy-bar"></div>
+					</div>
+				</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<button type="button" class="btn btn-danger">Health Potion</button>
+						</div>
+						<div class="col-sm-6">
+							<button type="button" class="btn btn-info">Energy Potion</button>
+						</div>
+					</div>
 			</div>
 			<div class="col-sm-3 hero-card"><!--  the "card" with the player's choice of character type -->
 			</div>

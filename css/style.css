@@ -17,10 +17,32 @@ body {
 
 }
 
-.enemy-img, .hero-img{ /*making it the background image so it doesn't change the size of the card*/
+.enemy-img, .hero-img { /*making it the background image so it doesn't change the size of the card*/
 	height: 270px;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: contain;
 }
+
+.alert-area {
+	overflow:scroll;
+	height:400px;
+}
+
+.bar-card {
+	margin-bottom: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
