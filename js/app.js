@@ -2,7 +2,8 @@ console.log('First Project');
 
 class Game {
 	constructor() {
-		this.isPlayersTurn = true;
+		this.enemies = [new Enemy(new Monster),new Enemy(new Ghost),new Enemy(new Vampire)];
+		this.currentEnemy = 0;
 		this.$alertArea = $('.enemy-row .alert-area')//create alert area
 		this.$enemyArea = $('.enemy-row .col-sm-9');//establising the enemy row so I can add stuff to it
 		this.$playerBarArea = $('.player-row .player-health');//establishing where the bars will go so I can add to it
@@ -10,26 +11,42 @@ class Game {
 		this.$lightAttackArea = $('.player-row .light-attack-container');//establishing to add to it
 		this.$playerCardArea = $('.player-row .hero-card');//establishing to add to it
 		this.$weaponArea = $('.player-row .weapon-card');//establishing to add to it
+		this.$healthPotionBtn = $('.health-potion');
+		this.$energyPotionBtn = $('.energy-potion');
 		this.newGame(); //starts the game, might need to move since I'm going to have player start with a different page
 	}
 	newGame() {
+
 		// todo: let player choose class
 		this.player = new Player(new Wizard);//creates the player and the character type, just using "wizard" right now to get it functional
 		//need to make it so player can choose character type. Array maybe?
-		this.enemy = new Enemy(new Monster);//same as player, player won't be choosing, but array may be best here too
-		this.$enemyArea.append(this.enemy.$enemyCard);//adds enemy card to correct spot
 		this.$playerBarArea.find('.player-health-bar').append(this.player.$healthBar);
 		this.$playerBarArea.find('.player-energy-bar').append(this.player.$energyBar);
 		this.$heavyAttackArea.append(this.player.$heavyAttackCard);//adds heavy attk to spot
 		this.$lightAttackArea.append(this.player.$lightAttackCard);//add light attk to spot
 		this.$playerCardArea.append(this.player.$heroCard);//adds hero card to spot
 		this.$weaponArea.append(this.player.$weaponCard);//adds weapon card to spot
+		this.fightEnemy();
+		
+	}
+
+	fightEnemy() {
+		this.enemy = this.enemies[this.currentEnemy];
+		this.$enemyArea.append(this.enemy.$enemyCard);//adds enemy card to correct spot
+		this.createAlert(`A ${this.enemy.character.name} appeared!`,'dark');
 		this.playerTurn();//player attacks first
 	}
 
 	endGame() { //to check if either the enemy or player won
 		if (this.winLoseCheck() === 1){
 			this.createAlert(`Congratulations! You defeated the enemy`,'success');
+			this.enemy.$enemyCard.detach();
+			this.currentEnemy++;
+			if (this.currentEnemy >= this.enemies.length) {
+				this.createAlert(`You have made the forest safe again! All enemies are defeated!`, 'primary')
+			} else {
+				this.fightEnemy();	
+			}
 		} else {
 			this.createAlert(`Bummer, you died.`,'danger');
 		}
@@ -37,7 +54,6 @@ class Game {
 
 	playerTurn() { //allows player to fight
 		this.player.startPlayerTurn();//right now, just adds energy
-		let typeOfAttack = null;
 
 		this.player.$heavyAttackCard.on('click', ()=> {
 			if (this.player.energy < this.player.heavyEnergy){//heavy attack is picked
@@ -55,7 +71,7 @@ class Game {
 			}
 		});
 
-		this.player.$lightAttackCard.on('click', ()=> {//light attack is picked
+		this.player.$lightAttackCard.on('click', () => {//light attack is picked
 			this.disableAttacks();
 			this.player.lightAttack(this.enemy);
 			this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.lightDamage} and used ${this.player.lightEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`, 'info')
@@ -64,12 +80,28 @@ class Game {
 			} else {
 				this.endGame();
 			}
-		});		
+		});	
+		this.$healthPotionBtn.on('click', () => {
+			this.disableAttacks();
+			this.player.takeHealthPotion();
+			this.createAlert(`You took a health potion and added ${this.player.healthPotionAmount} to your health`, 'light');
+			this.enemyTurn();
+
+		});
+
+		this.$energyPotionBtn.on('click', () => {
+			this.disableAttacks();
+			this.player.takeEnergyPotion();
+			this.createAlert(`You took a energy potion and added ${this.player.energyPotionAmount} to your energy`, 'light');
+			this.enemyTurn();
+		})
 	}
 
 	disableAttacks() {
 		this.player.$lightAttackCard.off('click');//keeps them from playing off turn
 		this.player.$heavyAttackCard.off('click');
+		this.$healthPotionBtn.off('click');
+		this.$energyPotionBtn.off('click');
 	}
 
 	enemyTurn() {
@@ -165,6 +197,8 @@ class Fighter {//both for player and enemies
 class Player extends Fighter { //has different methods that Fighter
 	constructor(character) {
 		super(character);
+		this.healthPotionAmount = 5;
+		this.energyPotionAmount = 5;
 	}
 
 	heavyAttack(enemy) {//self explanatory
@@ -177,26 +211,27 @@ class Player extends Fighter { //has different methods that Fighter
 	}
 
 	takeHealthPotion(){
-		this.addHealth(5);
+		this.addHealth(this.healthPotionAmount);
 	}
 
 	takeEnergyPotion(){
-		this.addEnergy(5);
+		this.addEnergy(this.energyPotionAmount);
 	}
 
 	createCard() { //create hero cards (including energy/health, type, weapon, attacks)
 		this.heavyEnergy = 5;
 		//make this and belwo three programmable with character type?
-		this.heavyDamage = 3;
+		this.heavyDamage = 20;
 		this.lightEnergy = 0;
 		this.lightDamage = 1;
 		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>'); //from boostrap, moved here from html so I could visualize it there first
 		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
+		
 		this.$heroCard = $(`<div class="card"><div class="hero-img" style="background-image: url('${this.character.picture}')"></div><div class="card-body"><h3 class="card-text">${this.character.name}</h3></div></div>`);
 
-		this.$heavyAttackCard = $(`<div class="card"><img src="https://www.gransforsbruk.com/wp-content/uploads/475-large-carving-axe-1440x1026.jpg" class="card-img-top" alt="heavy attack"><div class="card-body"><h5 class="card-title">Heavy Attack</h5><p class="card-text"><b>Attack:</b>${this.heavyDamage}</p><p class="card-text"><b>Energy:</b>${this.heavyEnergy}</p></div></div>`);
+		this.$heavyAttackCard = $(`<div class="card"><img src="https://www.gransforsbruk.com/wp-content/uploads/475-large-carving-axe-1440x1026.jpg" class="card-img-top" alt="heavy attack"><div class="card-body"><h5 class="card-title">Heavy Attack</h5><p class="card-text"><b>Attack:</b> ${this.heavyDamage}</p><p class="card-text"><b>Energy:</b> ${this.heavyEnergy}</p></div></div>`);
 
-		this.$lightAttackCard = $(`<div class="card"><img src="https://www.gransforsbruk.com/wp-content/uploads/475-large-carving-axe-1440x1026.jpg" class="card-img-top" alt="light attack"><div class="card-body"><h5 class="card-title">Light Attack</h5><p class="card-text"><b>Attack:</b>${this.lightDamage}</p><p class="card-text"><b>Energy:</b>${this.lightEnergy}</p></div></div>`);
+		this.$lightAttackCard = $(`<div class="card"><img src="https://www.gransforsbruk.com/wp-content/uploads/475-large-carving-axe-1440x1026.jpg" class="card-img-top" alt="light attack"><div class="card-body"><h5 class="card-title">Light Attack</h5><p class="card-text"><b>Attack:</b> ${this.lightDamage}</p><p class="card-text"><b>Energy:</b> ${this.lightEnergy}</p></div></div>`);
 
 		this.$weaponCard = $(`<div class="card"><div class="hero-img" style="background-image: url('${this.character.weaponPicture}')"></div><div class="card-body"><h3 class="card-text">${this.character.weaponName}</h3></div></div>`);
 
