@@ -42,6 +42,7 @@ class Game {
 			this.createAlert(`Congratulations! You defeated the enemy`,'success');
 			this.enemy.$enemyCard.detach();
 			this.currentEnemy++;
+			this.player.addHealth(100);
 			if (this.currentEnemy >= this.enemies.length) {
 				this.createAlert(`You have made the forest safe again! All enemies are defeated!`, 'primary')
 			} else {
