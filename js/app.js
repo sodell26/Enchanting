@@ -111,6 +111,7 @@ class Game {
 	}
 
 	enemyTurn() {
+		this.disableAttacks();
 		setTimeout(()=>{
 			this.enemy.startTurn();//right now, just adds energy
 			this.enemy.$enemyCard.addClass('attacking');
