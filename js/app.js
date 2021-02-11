@@ -2,7 +2,7 @@ console.log('First Project');
 
 class Game {
 	constructor() {
-		this.enemies = [new Enemy(new Monster),new Enemy(new Ghost),new Enemy(new Vampire)];
+		this.enemies = [new Enemy(new Ghost),new Enemy(new Vampire),new Enemy(new Ogre),new Enemy(new Monster),new Enemy(new SpaghettiMonster)];
 		this.currentEnemy = 0;
 		this.$alertArea = $('.enemy-row .alert-area')//create alert area
 		this.$enemyArea = $('.enemy-row .col-sm-9');//establising the enemy row so I can add stuff to it
@@ -39,17 +39,20 @@ class Game {
 
 	endGame() { //to check if either the enemy or player won
 		if (this.winLoseCheck() === 1){
-			this.createAlert(`Congratulations! You defeated the enemy`,'success');
+			this.createAlert(`Congratulations! You defeated the ${this.enemy.character.name}!`,'success');
 			this.enemy.$enemyCard.detach();
 			this.currentEnemy++;
 			this.player.addHealth(100);
 			if (this.currentEnemy >= this.enemies.length) {
 				this.createAlert(`You have made the forest safe again! All enemies are defeated!`, 'primary')
+				this.disableAttacks();	
 			} else {
 				this.fightEnemy();	
 			}
 		} else {
 			this.createAlert(`Bummer, you died.`,'danger');
+			this.disableAttacks();
+
 		}
 	}	
 
@@ -57,7 +60,7 @@ class Game {
 		this.player.startPlayerTurn();//right now, just adds energy
 		this.player.$heavyAttackCard.on('click', ()=> {
 			setTimeout(()=>{
-			this.player.$heroCard.addClass('attacking');
+				this.player.$heroCard.addClass('attacking');
 				if (this.player.energy < this.player.heavyEnergy){//heavy attack is picked
 					this.player.$heavyAttackCard.off('click');
 					this.createAlert('You do not have enough energy to make that move.','secondary');
@@ -71,21 +74,27 @@ class Game {
 						this.endGame();
 					}			
 				}
-			},1000)
+			},100)
 			setTimeout(()=>{
 				this.player.$heroCard.removeClass('attacking');
 			},2000)
 		});
 
 		this.player.$lightAttackCard.on('click', () => {//light attack is picked
-			this.disableAttacks();
-			this.player.lightAttack(this.enemy);
-			this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.lightDamage} and used ${this.player.lightEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`, 'info')
-			if (this.winLoseCheck() === 0 ){//same as heavy attack
-				this.enemyTurn();
-			} else {
-				this.endGame();
-			}
+			setTimeout(()=>{
+				this.player.$heroCard.addClass('attacking');
+				this.disableAttacks();
+				this.player.lightAttack(this.enemy);
+				this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.lightDamage} and used ${this.player.lightEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`, 'info')
+				if (this.winLoseCheck() === 0 ){//same as heavy attack
+					this.enemyTurn();
+				} else {
+					this.endGame();
+				}
+			},100)
+			setTimeout(()=>{
+				this.player.$heroCard.removeClass('attacking');
+			},2000)
 		});	
 		this.$healthPotionBtn.on('click', () => {
 			this.disableAttacks();
@@ -125,7 +134,7 @@ class Game {
 			} else {
 				this.endGame();
 			}		
-		},1000);
+		},1300);
 	}
 
 	winLoseCheck() {//shorter way to check for health status
@@ -171,10 +180,10 @@ class Fighter {//both for player and enemies
 	}
 
 	attack(enemy, energy, damage) {
+		enemy.takeDamage(damage);//opponent changes health equal to amount of damage
 		this.energy -= energy;
 		this.updateEnergyBar();
 		//need to make it so they can't chose an attack if not enough energy
-		enemy.takeDamage(damage);//opponent changes health equal to amount of damage
 	}
 
 	setCharacter(character) {
@@ -234,15 +243,15 @@ class Player extends Fighter { //has different methods that Fighter
 		//make this and belwo three programmable with character type?
 		this.heavyDamage = 20;
 		this.lightEnergy = 0;
-		this.lightDamage = 1;
+		this.lightDamage = 5;
 		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>'); //from boostrap, moved here from html so I could visualize it there first
 		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
 		
 		this.$heroCard = $(`<div class="card hero-card"><div class="hero-img" style="background-image: url('${this.character.picture}')"></div><div class="card-body"><h3 class="card-text">${this.character.name}</h3></div></div>`);
 
-		this.$heavyAttackCard = $(`<div class="card"><img src="https://www.gransforsbruk.com/wp-content/uploads/475-large-carving-axe-1440x1026.jpg" class="card-img-top" alt="heavy attack"><div class="card-body"><h5 class="card-title">Heavy Attack</h5><p class="card-text"><b>Attack:</b> ${this.heavyDamage}</p><p class="card-text"><b>Energy:</b> ${this.heavyEnergy}</p></div></div>`);
+		this.$heavyAttackCard = $(`<div class="card attack-card"><div class="attack-img" style="background-image: url('https://cdn.pixabay.com/photo/2016/08/17/22/22/pow-1601674_1280.png')"></div><div class="card-body"><h5 class="card-title">Heavy Attack</h5><p class="card-text"><b>Attack:</b> ${this.heavyDamage}</p><p class="card-text"><b>Energy:</b> ${this.heavyEnergy}</p></div></div>`);
 
-		this.$lightAttackCard = $(`<div class="card"><img src="https://www.gransforsbruk.com/wp-content/uploads/475-large-carving-axe-1440x1026.jpg" class="card-img-top" alt="light attack"><div class="card-body"><h5 class="card-title">Light Attack</h5><p class="card-text"><b>Attack:</b> ${this.lightDamage}</p><p class="card-text"><b>Energy:</b> ${this.lightEnergy}</p></div></div>`);
+		this.$lightAttackCard = $(`<div class="card attack-card"><div class="attack-img" style="background-image: url('https://i.pinimg.com/564x/d9/92/eb/d992eb96ef13af8d6caba3051c89e38c.jpg')"></div><div class="card-body"><h5 class="card-title">Light Attack</h5><p class="card-text"><b>Attack:</b> ${this.lightDamage}</p><p class="card-text"><b>Energy:</b> ${this.lightEnergy}</p></div></div>`);
 
 		this.$weaponCard = $(`<div class="card"><div class="hero-img" style="background-image: url('${this.character.weaponPicture}')"></div><div class="card-body"><h3 class="card-text">${this.character.weaponName}</h3></div></div>`);
 
@@ -258,9 +267,9 @@ class Player extends Fighter { //has different methods that Fighter
 class Enemy extends Fighter { //different from Fighter, but simpler than Player
 	constructor(character) {
 		super(character);
-		this.attackEnergy = 3;
+		this.attackEnergy = 5;
 		//make these programmable to type
-		this.attackDamage = 2;
+		this.attackDamage = this.character.attackDamage;;
 	}
 
 	createCard() { //same as with Player, but simpler
@@ -291,7 +300,7 @@ class Wizard extends Character {//I like this set up, unless I change weapons to
 	constructor() {
 		super();
 		this.energy = 20;
-		this.health = 30;
+		this.health = 100;
 		this.name = "wizard";//used for the dialogue and card
 		this.picture = "https://images.squarespace-cdn.com/content/v1/55a81ab8e4b0d6293bf4f755/1543616178316-IOVJVEGMHM7WYH0DKMKF/ke17ZwdGBToddI8pDm48kB7Wg69NbBN3UJ65yaPjgwpZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpzy7r4cmDkEVZ6VvAvlVoeYnCn-DUv0WXnO1FJ9eOsUX2q0X2kEKL_rY34eESCHPaY/lego-wizard.jpg?format=300w";
 		this.weaponPicture = "https://inclusive-solutions.com/wp-content/uploads/2015/11/flashing-magic-wand.jpg";
@@ -328,7 +337,8 @@ class Ghost extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 10;
-		this.health = 120;
+		this.health = 50;
+		this.attackDamage = 5;
 		this.name = "ghost";
 		this.picture = "https://illustoon.com/photo/dl/3486.png";
 	}
@@ -338,7 +348,8 @@ class Vampire extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 15;
-		this.health = 200;
+		this.health = 60;
+		this.attackDamage = 7;
 		this.name = "vampire";
 		this.picture = "https://images-na.ssl-images-amazon.com/images/I/81W9SaVK6nL._AC_SL1500_.jpg";
 	}
@@ -349,7 +360,8 @@ class Ogre extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 20;
-		this.health = 240;
+		this.health = 75;
+		this.attackDamage = 10;
 		this.name = "ogre";
 		this.picture = "https://www.youngupstarts.com/wp-content/uploads/2013/11/Shrek_fierce.jpg";
 	}
@@ -359,7 +371,8 @@ class Monster extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 25;
-		this.health = 300;
+		this.health = 100;
+		this.attackDamage = 15;
 		this.name = "werewolf";
 		this.picture = "https://www.pngkey.com/png/full/150-1504087_werewolf-free-icons-free-vector-icons-svg-psd.png";
 	}
@@ -370,7 +383,8 @@ class SpaghettiMonster extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 40;
-		this.health = 400;
+		this.health = 150;
+		this.attackDamage = 20;
 		this.name = "spaghetti monster";
 		this.picture = "https://cdn.britannica.com/57/198157-050-503D66E9/artist-rendition-Flying-Spaghetti-Monster.jpg";
 	}

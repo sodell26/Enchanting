@@ -1,5 +1,5 @@
 body {
-	background-color: #472e82;
+	background-image: url(https://images.unsplash.com/photo-1483982258113-b72862e6cff6?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80);
 	/*change to a cool background*/
 }
 
@@ -13,15 +13,19 @@ body {
 	float: none;
 }
 
-.weapon-card {
-
-}
 
 .enemy-img, .hero-img { /*making it the background image so it doesn't change the size of the card*/
 	height: 270px;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: contain;
+}
+
+.attack-img {
+  height: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .alert-area {
@@ -31,6 +35,14 @@ body {
 
 .bar-card {
 	margin-bottom: 20px;
+}
+
+.weapon-card, .hero-card{
+  height: 338px;
+}
+
+..heavy-attack-container {
+  height: 170;
 }
 
 .enemy-card.attacking {
@@ -50,32 +62,35 @@ body {
   0% {
     transform:  translate(0px,0px)  ;
   }
-  10% {
+  7% {
     transform:  translate(-10px,0px)  ;
   }
-  20% {
+  14% {
     transform:  translate(10px,0px)  ;
   }
-  30% {
+  21% {
     transform:  translate(-10px,0px)  ;
   }
-  40% {
+  28% {
     transform:  translate(10px,0px)  ;
   }
-  50% {
+  35% {
     transform:  translate(0px,0px)  ;
   }
-  60% {
+  42% {
     transform:  translate(0px,-78px)  ;
   }
-  70% {
+  60% {
     transform:  translate(0px,0px)  ;
   }
-  80% {
+  70% {
     transform:  translate(-11px,0px)  ;
   }
+  80% {
+  transform:  translate(13px,0px)  ;
+  }
   90% {
-    transform:  translate(13px,0px)  ;
+    transform:  translate(-13px,0px)  ;
   }
   100% {
     transform:  translate(0px,0px)  ;
