@@ -55,21 +55,26 @@ class Game {
 
 	playerTurn() { //allows player to fight
 		this.player.startPlayerTurn();//right now, just adds energy
-
 		this.player.$heavyAttackCard.on('click', ()=> {
-			if (this.player.energy < this.player.heavyEnergy){//heavy attack is picked
-				this.player.$heavyAttackCard.off('click');
-				this.createAlert('You do not have enough energy to make that move.','secondary');
-			} else {
-				this.disableAttacks();
-				this.player.heavyAttack(this.enemy);
-				this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.heavyDamage} and used ${this.player.heavyEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`,'info');
-				if (this.winLoseCheck() === 0 ){ //if health is both good for player and enemy, move to monster's turn
-					this.enemyTurn();
+			setTimeout(()=>{
+			this.player.$heroCard.addClass('attacking');
+				if (this.player.energy < this.player.heavyEnergy){//heavy attack is picked
+					this.player.$heavyAttackCard.off('click');
+					this.createAlert('You do not have enough energy to make that move.','secondary');
 				} else {
-					this.endGame();
-				}			
-			}
+					this.disableAttacks();
+					this.player.heavyAttack(this.enemy);
+					this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.heavyDamage} and used ${this.player.heavyEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`,'info');
+					if (this.winLoseCheck() === 0 ){ //if health is both good for player and enemy, move to monster's turn
+						this.enemyTurn();
+					} else {
+						this.endGame();
+					}			
+				}
+			},1000)
+			setTimeout(()=>{
+				this.player.$heroCard.removeClass('attacking');
+			},2000)
 		});
 
 		this.player.$lightAttackCard.on('click', () => {//light attack is picked
@@ -119,7 +124,7 @@ class Game {
 			} else {
 				this.endGame();
 			}		
-		},500);
+		},1000);
 	}
 
 	winLoseCheck() {//shorter way to check for health status
@@ -232,7 +237,7 @@ class Player extends Fighter { //has different methods that Fighter
 		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>'); //from boostrap, moved here from html so I could visualize it there first
 		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
 		
-		this.$heroCard = $(`<div class="card"><div class="hero-img" style="background-image: url('${this.character.picture}')"></div><div class="card-body"><h3 class="card-text">${this.character.name}</h3></div></div>`);
+		this.$heroCard = $(`<div class="card hero-card"><div class="hero-img" style="background-image: url('${this.character.picture}')"></div><div class="card-body"><h3 class="card-text">${this.character.name}</h3></div></div>`);
 
 		this.$heavyAttackCard = $(`<div class="card"><img src="https://www.gransforsbruk.com/wp-content/uploads/475-large-carving-axe-1440x1026.jpg" class="card-img-top" alt="heavy attack"><div class="card-body"><h5 class="card-title">Heavy Attack</h5><p class="card-text"><b>Attack:</b> ${this.heavyDamage}</p><p class="card-text"><b>Energy:</b> ${this.heavyEnergy}</p></div></div>`);
 
@@ -322,7 +327,7 @@ class Ghost extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 10;
-		this.health = 12;
+		this.health = 120;
 		this.name = "ghost";
 		this.picture = "https://illustoon.com/photo/dl/3486.png";
 	}
@@ -332,7 +337,7 @@ class Vampire extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 15;
-		this.health = 20;
+		this.health = 200;
 		this.name = "vampire";
 		this.picture = "https://images-na.ssl-images-amazon.com/images/I/81W9SaVK6nL._AC_SL1500_.jpg";
 	}
@@ -343,7 +348,7 @@ class Ogre extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 20;
-		this.health = 24;
+		this.health = 240;
 		this.name = "ogre";
 		this.picture = "https://www.youngupstarts.com/wp-content/uploads/2013/11/Shrek_fierce.jpg";
 	}
@@ -353,7 +358,7 @@ class Monster extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 25;
-		this.health = 30;
+		this.health = 300;
 		this.name = "werewolf";
 		this.picture = "https://www.pngkey.com/png/full/150-1504087_werewolf-free-icons-free-vector-icons-svg-psd.png";
 	}
@@ -364,7 +369,7 @@ class SpaghettiMonster extends MonsterCharacter {
 	constructor() {
 		super();
 		this.energy = 40;
-		this.health = 40;
+		this.health = 400;
 		this.name = "spaghetti monster";
 		this.picture = "https://cdn.britannica.com/57/198157-050-503D66E9/artist-rendition-Flying-Spaghetti-Monster.jpg";
 	}

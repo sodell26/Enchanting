@@ -40,6 +40,49 @@ body {
 	transform-origin: 50% 50%;
 }
 
+.hero-card.attacking{
+  animation: heroAttack linear 1s;
+  animation-iteration-count: 1;
+  transform-origin: 50% 50%;
+}
+
+@keyframes heroAttack{
+  0% {
+    transform:  translate(0px,0px)  ;
+  }
+  10% {
+    transform:  translate(-10px,0px)  ;
+  }
+  20% {
+    transform:  translate(10px,0px)  ;
+  }
+  30% {
+    transform:  translate(-10px,0px)  ;
+  }
+  40% {
+    transform:  translate(10px,0px)  ;
+  }
+  50% {
+    transform:  translate(0px,0px)  ;
+  }
+  60% {
+    transform:  translate(0px,-78px)  ;
+  }
+  70% {
+    transform:  translate(0px,0px)  ;
+  }
+  80% {
+    transform:  translate(-11px,0px)  ;
+  }
+  90% {
+    transform:  translate(13px,0px)  ;
+  }
+  100% {
+    transform:  translate(0px,0px)  ;
+  }
+}
+
+
 @keyframes enemyAttack{
   0% {
     transform:  translate(0px,0px)  ;
