@@ -13,18 +13,34 @@ class Game {
 		this.$weaponArea = $('.player-row .weapon-card');//establishing to add to it
 		this.$healthPotionBtn = $('.health-potion');
 		this.$energyPotionBtn = $('.energy-potion');
-		this.newGame(); //starts the game, might need to move since I'm going to have player start with a different page
+		this.createSelectScreen();
 	}
-	newGame() {
 
+	createSelectScreen() {
+		let characterChoices = [new Wizard, new Warrior, new Archer];
+		let $selectorRow = $('.character-select');
+		for (let i=0; i<characterChoices.length; i++){
+			const $typeColumn = $('<div class="col-sm-4"></div>');
+			$typeColumn.append(characterChoices[i].$heroCard);
+			$selectorRow.append($typeColumn);
+			characterChoices[i].$heroCard.on('click',(e)=>{
+				let className = $(e.currentTarget).data('character');
+				this.player = new Player(eval("new "+className));
+				$('.start-screen').addClass('hidden');
+				this.newGame();
+			})
+		}
+	}
+
+	newGame() {
+		$('.battle-ground').removeClass('hidden');
 		// todo: let player choose class
-		this.player = new Player(new Wizard);//creates the player and the character type, just using "wizard" right now to get it functional
 		//need to make it so player can choose character type. Array maybe?
 		this.$playerBarArea.find('.player-health-bar').append(this.player.$healthBar);
 		this.$playerBarArea.find('.player-energy-bar').append(this.player.$energyBar);
 		this.$heavyAttackArea.append(this.player.$heavyAttackCard);//adds heavy attk to spot
 		this.$lightAttackArea.append(this.player.$lightAttackCard);//add light attk to spot
-		this.$playerCardArea.append(this.player.$heroCard);//adds hero card to spot
+		this.$playerCardArea.append(this.player.character.$heroCard);//adds hero card to spot
 		this.$weaponArea.append(this.player.$weaponCard);//adds weapon card to spot
 		this.fightEnemy();
 		
@@ -60,7 +76,7 @@ class Game {
 		this.player.startPlayerTurn();//right now, just adds energy
 		this.player.$heavyAttackCard.on('click', ()=> {
 			setTimeout(()=>{
-				this.player.$heroCard.addClass('attacking');
+				this.player.character.$heroCard.addClass('attacking');
 				if (this.player.energy < this.player.heavyEnergy){//heavy attack is picked
 					this.player.$heavyAttackCard.off('click');
 					this.createAlert('You do not have enough energy to make that move.','secondary');
@@ -76,13 +92,13 @@ class Game {
 				}
 			},100)
 			setTimeout(()=>{
-				this.player.$heroCard.removeClass('attacking');
+				this.player.character.$heroCard.removeClass('attacking');
 			},2000)
 		});
 
 		this.player.$lightAttackCard.on('click', () => {//light attack is picked
 			setTimeout(()=>{
-				this.player.$heroCard.addClass('attacking');
+				this.player.character.$heroCard.addClass('attacking');
 				this.disableAttacks();
 				this.player.lightAttack(this.enemy);
 				this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.lightDamage} and used ${this.player.lightEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`, 'info')
@@ -93,7 +109,7 @@ class Game {
 				}
 			},100)
 			setTimeout(()=>{
-				this.player.$heroCard.removeClass('attacking');
+				this.player.character.$heroCard.removeClass('attacking');
 			},2000)
 		});	
 		this.$healthPotionBtn.on('click', () => {
@@ -247,8 +263,6 @@ class Player extends Fighter { //has different methods that Fighter
 		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>'); //from boostrap, moved here from html so I could visualize it there first
 		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
 		
-		this.$heroCard = $(`<div class="card hero-card"><div class="hero-img" style="background-image: url('${this.character.picture}')"></div><div class="card-body"><h3 class="card-text">${this.character.name}</h3></div></div>`);
-
 		this.$heavyAttackCard = $(`<div class="card attack-card"><div class="attack-img" style="background-image: url('https://cdn.pixabay.com/photo/2016/08/17/22/22/pow-1601674_1280.png')"></div><div class="card-body"><h5 class="card-title">Heavy Attack</h5><p class="card-text"><b>Attack:</b> ${this.heavyDamage}</p><p class="card-text"><b>Energy:</b> ${this.heavyEnergy}</p></div></div>`);
 
 		this.$lightAttackCard = $(`<div class="card attack-card"><div class="attack-img" style="background-image: url('https://i.pinimg.com/564x/d9/92/eb/d992eb96ef13af8d6caba3051c89e38c.jpg')"></div><div class="card-body"><h5 class="card-title">Light Attack</h5><p class="card-text"><b>Attack:</b> ${this.lightDamage}</p><p class="card-text"><b>Energy:</b> ${this.lightEnergy}</p></div></div>`);
@@ -289,14 +303,21 @@ class Enemy extends Fighter { //different from Fighter, but simpler than Player
 }
 
 class Character { //don't need to add anything to this yet, but wanted something for character types and enemies to extend from in case I need to add to later
-
+			
 }
 
 class MonsterCharacter extends Character {//lots of enemies, this should help with DRY hopefully
 
 }
 
-class Wizard extends Character {//I like this set up, unless I change weapons to being their own thing
+class PlayerCharacter extends Character {
+
+	createHeroCard() {
+		this.$heroCard = $(`<div class="card hero-card" data-character="${this.constructor.name}"><div class="hero-img" style="background-image: url('${this.picture}')"></div><div class="card-body"><h3 class="card-text">${this.name}</h3></div></div>`);
+	}
+}
+
+class Wizard extends PlayerCharacter {//I like this set up, unless I change weapons to being their own thing
 	constructor() {
 		super();
 		this.energy = 20;
@@ -305,10 +326,11 @@ class Wizard extends Character {//I like this set up, unless I change weapons to
 		this.picture = "https://images.squarespace-cdn.com/content/v1/55a81ab8e4b0d6293bf4f755/1543616178316-IOVJVEGMHM7WYH0DKMKF/ke17ZwdGBToddI8pDm48kB7Wg69NbBN3UJ65yaPjgwpZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpzy7r4cmDkEVZ6VvAvlVoeYnCn-DUv0WXnO1FJ9eOsUX2q0X2kEKL_rY34eESCHPaY/lego-wizard.jpg?format=300w";
 		this.weaponPicture = "https://inclusive-solutions.com/wp-content/uploads/2015/11/flashing-magic-wand.jpg";
 		this.weaponName = "Wand";
+		this.createHeroCard();
 	}
 }
 
-class Warrior extends Character {
+class Warrior extends PlayerCharacter {
 	constructor() {
 		super();
 		this.energy = 30;
@@ -317,11 +339,11 @@ class Warrior extends Character {
 		this.picture = 'https://img.brickowl.com/files/image_cache/large/lego-spartan-warrior-minifigure-25-873254.jpg';
 		this.weaponPicture = 'https://cdn3.vectorstock.com/i/thumb-large/97/02/morgenstern-medieval-weapon-or-mace-object-vector-23849702.jpg';
 		this.weaponName = 'mace';
-
+		this.createHeroCard();
 	}
 }
 
-class Archer extends Character {
+class Archer extends PlayerCharacter {
 	constructor() {
 		super();
 		this.energy = 25;
@@ -330,6 +352,7 @@ class Archer extends Character {
 		this.picture = 'https://images-na.ssl-images-amazon.com/images/I/419BQsP3vNL._AC_.jpg';
 		this.weaponPicture = 'https://i.pinimg.com/564x/3c/a6/81/3ca68126bb4c8da7bbf919aac363a7c8.jpg';
 		this.weaponName = 'bow and arrow'
+		this.createHeroCard();
 	}
 }
 
