@@ -22,7 +22,7 @@ class Game {
 		$('.start-screen').removeClass('hidden'); //hide battleground
 	}
 
-	createSelectScreen() {
+	createSelectScreen() { //first screen
 		let characterChoices = [new Wizard, new Warrior, new Archer];
 		let $selectorRow = $('.character-select');
 		for (let i=0; i<characterChoices.length; i++){
@@ -64,7 +64,7 @@ class Game {
 		if (this.winLoseCheck() === 1){
 			this.createAlert(`Congratulations! You defeated the ${this.enemy.character.name}!`,'success');
 			this.currentEnemy++;
-			this.player.addHealth(100);
+			this.player.addHealth(1000);
 			if (this.currentEnemy >= this.enemies.length) {
 				this.createAlert(`You have made the forest safe again! All enemies are defeated!`, 'primary')
 				this.enemy.$enemyCard.detach();
