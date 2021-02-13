@@ -240,7 +240,7 @@ class Fighter {//both for player and enemies
 class Player extends Fighter { //has different methods that Fighter
 	constructor(character) {
 		super(character);
-		this.healthPotionAmount = 10;
+		this.healthPotionAmount = 20;
 		this.energyPotionAmount = 10;
 	}
 
@@ -328,11 +328,11 @@ class Wizard extends PlayerCharacter {//I like this set up, unless I change weap
 	constructor() {
 		super();
 		this.energy = 20;
-		this.health = 100;
+		this.health = 125;
 		this.name = "wizard";//used for the dialogue and card
 		this.picture = "https://images.squarespace-cdn.com/content/v1/55a81ab8e4b0d6293bf4f755/1543616178316-IOVJVEGMHM7WYH0DKMKF/ke17ZwdGBToddI8pDm48kB7Wg69NbBN3UJ65yaPjgwpZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpzy7r4cmDkEVZ6VvAvlVoeYnCn-DUv0WXnO1FJ9eOsUX2q0X2kEKL_rY34eESCHPaY/lego-wizard.jpg?format=300w";
 		this.weaponPicture = "https://inclusive-solutions.com/wp-content/uploads/2015/11/flashing-magic-wand.jpg";
-		this.weaponName = "Wand";
+		this.weaponName = "wand";
 		this.createHeroCard();
 	}
 }
@@ -341,7 +341,7 @@ class Warrior extends PlayerCharacter {
 	constructor() {
 		super();
 		this.energy = 35;
-		this.health = 65;
+		this.health = 85;
 		this.name = 'warrior';
 		this.picture = 'https://img.brickowl.com/files/image_cache/large/lego-spartan-warrior-minifigure-25-873254.jpg';
 		this.weaponPicture = 'https://cdn3.vectorstock.com/i/thumb-large/97/02/morgenstern-medieval-weapon-or-mace-object-vector-23849702.jpg';
@@ -354,7 +354,7 @@ class Archer extends PlayerCharacter {
 	constructor() {
 		super();
 		this.energy = 25;
-		this.health = 75;
+		this.health = 100;
 		this.name = 'archer';
 		this.picture = 'https://images-na.ssl-images-amazon.com/images/I/419BQsP3vNL._AC_.jpg';
 		this.weaponPicture = 'https://i.pinimg.com/564x/3c/a6/81/3ca68126bb4c8da7bbf919aac363a7c8.jpg';
@@ -402,7 +402,7 @@ class Monster extends MonsterCharacter {
 		super();
 		this.energy = 100;
 		this.health = 60;
-		this.attackDamage = 15;
+		this.attackDamage = 12;
 		this.name = "werewolf";
 		this.picture = "https://www.pngkey.com/png/full/150-1504087_werewolf-free-icons-free-vector-icons-svg-psd.png";
 	}
@@ -414,7 +414,7 @@ class SpaghettiMonster extends MonsterCharacter {
 		super();
 		this.energy = 100;
 		this.health = 80;
-		this.attackDamage = 20;
+		this.attackDamage = 15;
 		this.name = "spaghetti monster";
 		this.picture = "https://cdn.britannica.com/57/198157-050-503D66E9/artist-rendition-Flying-Spaghetti-Monster.jpg";
 	}
