@@ -73,8 +73,8 @@ class Game {
 				this.fightEnemy();	
 			}
 		} else {
-			this.createAlert(`Bummer, you died.`,'danger');
 			this.disableAttacks();
+			this.createAlert(`Bummer, you died.`,'danger');
 
 		}
 	}	
@@ -83,15 +83,15 @@ class Game {
 		this.player.startPlayerTurn();//right now, just adds energy
 		this.player.$heavyAttackCard.on('click', ()=> {
 			setTimeout(()=>{
-				this.player.character.$heroCard.addClass('attacking');
 				if (this.player.energy < this.player.heavyEnergy){//heavy attack is picked
 					this.player.$heavyAttackCard.off('click');
 					this.createAlert('You do not have enough energy to make that move.','secondary');
 				} else {
+					if (this.winLoseCheck() === 0 ){ //if health is both good for player and enemy, move to monster's turn
+					this.player.character.$heroCard.addClass('attacking');
 					this.disableAttacks();
 					this.player.heavyAttack(this.enemy);
 					this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.heavyDamage} and used ${this.player.heavyEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`,'info');
-					if (this.winLoseCheck() === 0 ){ //if health is both good for player and enemy, move to monster's turn
 						this.enemyTurn();
 					} else {
 						this.endGame();
@@ -105,11 +105,11 @@ class Game {
 
 		this.player.$lightAttackCard.on('click', () => {//light attack is picked
 			setTimeout(()=>{
+				if (this.winLoseCheck() === 0 ){//same as heavy attack
 				this.player.character.$heroCard.addClass('attacking');
 				this.disableAttacks();
 				this.player.lightAttack(this.enemy);
 				this.createAlert(`You attacked! You hit the ${this.enemy.character.name} for ${this.player.lightDamage} and used ${this.player.lightEnergy} energy. The ${this.enemy.character.name} has ${this.enemy.health} health left.`, 'info')
-				if (this.winLoseCheck() === 0 ){//same as heavy attack
 					this.enemyTurn();
 				} else {
 					this.endGame();
@@ -240,8 +240,8 @@ class Fighter {//both for player and enemies
 class Player extends Fighter { //has different methods that Fighter
 	constructor(character) {
 		super(character);
-		this.healthPotionAmount = 5;
-		this.energyPotionAmount = 5;
+		this.healthPotionAmount = 10;
+		this.energyPotionAmount = 10;
 	}
 
 	heavyAttack(enemy) {//self explanatory
@@ -264,9 +264,9 @@ class Player extends Fighter { //has different methods that Fighter
 	createCard() { //create hero cards (including energy/health, type, weapon, attacks)
 		this.heavyEnergy = 5;
 		//make this and belwo three programmable with character type?
-		this.heavyDamage = 20;
+		this.heavyDamage = 17;
 		this.lightEnergy = 0;
-		this.lightDamage = 5;
+		this.lightDamage = 8;
 		this.$energyBar = $('<div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>'); //from boostrap, moved here from html so I could visualize it there first
 		this.$healthBar = $('<div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>');
 		
@@ -340,8 +340,8 @@ class Wizard extends PlayerCharacter {//I like this set up, unless I change weap
 class Warrior extends PlayerCharacter {
 	constructor() {
 		super();
-		this.energy = 30;
-		this.health = 20;
+		this.energy = 35;
+		this.health = 65;
 		this.name = 'warrior';
 		this.picture = 'https://img.brickowl.com/files/image_cache/large/lego-spartan-warrior-minifigure-25-873254.jpg';
 		this.weaponPicture = 'https://cdn3.vectorstock.com/i/thumb-large/97/02/morgenstern-medieval-weapon-or-mace-object-vector-23849702.jpg';
@@ -354,7 +354,7 @@ class Archer extends PlayerCharacter {
 	constructor() {
 		super();
 		this.energy = 25;
-		this.health = 25;
+		this.health = 75;
 		this.name = 'archer';
 		this.picture = 'https://images-na.ssl-images-amazon.com/images/I/419BQsP3vNL._AC_.jpg';
 		this.weaponPicture = 'https://i.pinimg.com/564x/3c/a6/81/3ca68126bb4c8da7bbf919aac363a7c8.jpg';
@@ -366,8 +366,8 @@ class Archer extends PlayerCharacter {
 class Ghost extends MonsterCharacter {
 	constructor() {
 		super();
-		this.energy = 10;
-		this.health = 50;
+		this.energy = 100;
+		this.health = 30;
 		this.attackDamage = 5;
 		this.name = "ghost";
 		this.picture = "https://illustoon.com/photo/dl/3486.png";
@@ -377,8 +377,8 @@ class Ghost extends MonsterCharacter {
 class Vampire extends MonsterCharacter {
 	constructor() {
 		super();
-		this.energy = 15;
-		this.health = 60;
+		this.energy = 100;
+		this.health = 40;
 		this.attackDamage = 7;
 		this.name = "vampire";
 		this.picture = "https://images-na.ssl-images-amazon.com/images/I/81W9SaVK6nL._AC_SL1500_.jpg";
@@ -389,8 +389,8 @@ class Vampire extends MonsterCharacter {
 class Ogre extends MonsterCharacter {
 	constructor() {
 		super();
-		this.energy = 20;
-		this.health = 75;
+		this.energy = 100;
+		this.health = 50;
 		this.attackDamage = 10;
 		this.name = "ogre";
 		this.picture = "https://www.youngupstarts.com/wp-content/uploads/2013/11/Shrek_fierce.jpg";
@@ -400,8 +400,8 @@ class Ogre extends MonsterCharacter {
 class Monster extends MonsterCharacter {
 	constructor() {
 		super();
-		this.energy = 25;
-		this.health = 100;
+		this.energy = 100;
+		this.health = 60;
 		this.attackDamage = 15;
 		this.name = "werewolf";
 		this.picture = "https://www.pngkey.com/png/full/150-1504087_werewolf-free-icons-free-vector-icons-svg-psd.png";
@@ -412,8 +412,8 @@ class Monster extends MonsterCharacter {
 class SpaghettiMonster extends MonsterCharacter {
 	constructor() {
 		super();
-		this.energy = 40;
-		this.health = 150;
+		this.energy = 100;
+		this.health = 80;
 		this.attackDamage = 20;
 		this.name = "spaghetti monster";
 		this.picture = "https://cdn.britannica.com/57/198157-050-503D66E9/artist-rendition-Flying-Spaghetti-Monster.jpg";
