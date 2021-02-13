@@ -1,11 +1,11 @@
 # Enchanting
 
-Enchanting the Huddle - user stories.   
+Enchanting the Huddle - user stories.    
 
-The user should be able to start a new game. 
-The user should be able to choose one character type. 
-The user should not be able to choose more than one character type. 
-The user, after choosing the type, should be able to pick a weapon --stretch. 
+The user should be able to start a new game.  
+The user should be able to choose one character type.  
+The user should not be able to choose more than one character type.  
+The user, after choosing the type, should be able to pick a weapon --stretch.  
 The user should be able to see their health.  
 The user should be able to see their energy level.   
 The user should be presented with an opponent.  
