@@ -2,10 +2,8 @@ console.log('First Project');
 
 class Game {
 	constructor() {
-		this.enemies = [new Enemy(new Ghost),new Enemy(new Vampire),new Enemy(new Ogre),new Enemy(new Monster),new Enemy(new SpaghettiMonster)];
-		this.currentEnemy = 0;
 		this.$alertArea = $('.enemy-row .alert-area')//create alert area
-		this.$enemyArea = $('.enemy-row .col-sm-9');//establising the enemy row so I can add stuff to it
+		this.$enemyArea = $('.enemy-row .enemy-card-area');//establising the enemy row so I can add stuff to it
 		this.$playerBarArea = $('.player-row .player-health');//establishing where the bars will go so I can add to it
 		this.$heavyAttackArea = $('.player-row .heavy-attack-container');//establishing to add to it
 		this.$lightAttackArea = $('.player-row .light-attack-container');//establishing to add to it
@@ -13,7 +11,15 @@ class Game {
 		this.$weaponArea = $('.player-row .weapon-card');//establishing to add to it
 		this.$healthPotionBtn = $('.health-potion');
 		this.$energyPotionBtn = $('.energy-potion');
+		$('.restart-btn').on('click', () => {
+			this.restartBtn();
+		})
 		this.createSelectScreen();
+	}
+
+	restartBtn() {
+		$('.battle-ground').addClass('hidden'); //show starter screen
+		$('.start-screen').removeClass('hidden'); //hide battleground
 	}
 
 	createSelectScreen() {
@@ -34,21 +40,22 @@ class Game {
 
 	newGame() {
 		$('.battle-ground').removeClass('hidden');
-		// todo: let player choose class
-		//need to make it so player can choose character type. Array maybe?
-		this.$playerBarArea.find('.player-health-bar').append(this.player.$healthBar);
-		this.$playerBarArea.find('.player-energy-bar').append(this.player.$energyBar);
-		this.$heavyAttackArea.append(this.player.$heavyAttackCard);//adds heavy attk to spot
-		this.$lightAttackArea.append(this.player.$lightAttackCard);//add light attk to spot
-		this.$playerCardArea.append(this.player.character.$heroCard);//adds hero card to spot
-		this.$weaponArea.append(this.player.$weaponCard);//adds weapon card to spot
+		this.enemies = [new Enemy(new Ghost),new Enemy(new Vampire),new Enemy(new Ogre),new Enemy(new Monster),new Enemy(new SpaghettiMonster)];
+		this.currentEnemy = 0;
+		this.$alertArea.empty();
+		this.$playerBarArea.find('.player-health-bar').empty().append(this.player.$healthBar);
+		this.$playerBarArea.find('.player-energy-bar').empty().append(this.player.$energyBar);
+		this.$heavyAttackArea.empty().append(this.player.$heavyAttackCard);//adds heavy attk to spot
+		this.$lightAttackArea.empty().append(this.player.$lightAttackCard);//add light attk to spot
+		this.$playerCardArea.empty().append(this.player.character.$heroCard);//adds hero card to spot
+		this.$weaponArea.empty().append(this.player.$weaponCard);//adds weapon card to spot
 		this.fightEnemy();
 		
 	}
 
 	fightEnemy() {
 		this.enemy = this.enemies[this.currentEnemy];
-		this.$enemyArea.append(this.enemy.$enemyCard);//adds enemy card to correct spot
+		this.$enemyArea.empty().append(this.enemy.$enemyCard);//empty to clear it out first, then adds enemy card to correct spot
 		this.createAlert(`A ${this.enemy.character.name} appeared!`,'dark');
 		this.playerTurn();//player attacks first
 	}
@@ -56,11 +63,11 @@ class Game {
 	endGame() { //to check if either the enemy or player won
 		if (this.winLoseCheck() === 1){
 			this.createAlert(`Congratulations! You defeated the ${this.enemy.character.name}!`,'success');
-			this.enemy.$enemyCard.detach();
 			this.currentEnemy++;
 			this.player.addHealth(100);
 			if (this.currentEnemy >= this.enemies.length) {
 				this.createAlert(`You have made the forest safe again! All enemies are defeated!`, 'primary')
+				this.enemy.$enemyCard.detach();
 				this.disableAttacks();	
 			} else {
 				this.fightEnemy();	
